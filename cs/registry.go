@@ -2,11 +2,12 @@ package cs
 
 import (
 	"net/http"
+	"net/url"
 )
 
 const (
 	CRDefaultEndpoint = "https://cr.cn-hangzhou.aliyuncs.com"
-	CRAPIVersion      = "2016-06-07"
+	CRAPIVersion      = "2018-12-01"
 )
 
 func NewCRClientWithSecurityToken(region, accessKeyId, accessKeySecret, securityToken string) *Client {
@@ -31,6 +32,13 @@ type CRAuthorizationToken struct {
 
 func (client *Client) GetCRAuthorizationToken() (crtoken CRAuthorizationToken, err error) {
 	err = client.Invoke("", http.MethodGet, "/tokens", nil, nil, &crtoken)
+	return
+}
+
+func (client *Client) GetCRInstanceAuthorizationToken(instanceId string) (crtoken CRAuthorizationToken, err error) {
+	query := url.Values{}
+	query.Set("InstanceId", instanceId)
+	err = client.Invoke("", http.MethodGet, "/tokens", query, nil, &crtoken)
 	return
 }
 
